@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App de Productividad</title>
+    <link rel="icon" href="{{ url_for('static', filename='tarea.png') }}" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+
+        body {
+            background: #babff3;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #8575ff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .navbar-title {
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .navbar-logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2dd1f1;
+        }
+
+        .navbar-logout {
+            background-color: #2dd1f1;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .navbar-logout:hover {
+            background-color: #bb01a8;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .emoji-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .emoji {
+            font-size: 40px;
+            margin-right: 10px;
+        }
+
+        .user-greeting {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Productividad */
+        .productivity-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .productivity-title {
+            font-size: 24px;
+            color: #8575ff;
+            margin-bottom: 10px;
+        }
+
+        .productivity-bar-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 30px;
+            margin: 10px 0;
+        }
+
+        .productivity-bar {
+            line-height: 30px; 
+            background-color: #2dd1f1;
+            height: 100%;
+            text-align: center;
+            line-height: 30px; 
+            color: white;
+            border-radius: 5px; 
+            transition: width 0.3s ease; 
+        }
+
+        .tareas {
+            display: flex;
+            flex-direction: column; 
+            gap: 10px; 
+            padding: 20px;
+        }
+
+        .tarea-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .tarea-card:hover {
+            transform: scale(1.02); 
+        }
+
+        .tarea-header {
+            display: flex;
+            align-items: center; 
+            justify-content: space-between; 
+            width: 100%;
+        }
+
+        .tarea-header input[type="checkbox"] {
+            margin-right: 15px; 
+        }
+
+        .tarea-title {
+            flex-grow: 1; 
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+
+        .tarea-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn, .delete-btn {
+            background-color: #8575ff;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            align-items: right;
+        }
+
+        .edit-btn:hover, .delete-btn:hover {
+            background-color: #2dd1f1;
+        }
+
+        #agregar-tarea {
+            background-color: #2dd1f1;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #agregar-tarea:hover {
+            background-color: #bb01a8;
+        }
+
+        #footer{
+            color: #4f4e4e;
+            text-align: center;
+            padding: 10px 0px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: center;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <nav>
+        <div class="navbar-logo"><img src="static/productividad.png" alt=""></div>
+        <div class="navbar-title">Gestión de Tareas</div>
+        <button id="logoutBtn" class="navbar-logout">Cerrar sesión</button>
+    </nav>
+
+    <div class="container">
+
+        <div class="emoji-container">
+            <div class="emoji" id="emoji">🙂</div>
+            <div class="user-greeting"><span>Hola, <span class="user-name">{{ user_name }}</span>!</span></div>
+        </div>
+
+        <div class="productivity-section">
+            <h2 class="productivity-title">Tu productividad es de:</h2>
+            <div class="productivity-bar-container">
+                <div id="productivity-bar" class="productivity-bar"> {{ productivity_percentage }}%</div>
+            </div>
+        </div>
+
+        <div style="text-align: right;">
+            <button id="agregar-tarea">Agregar Tarea</button>
+        </div>
+
+        <section class="tareas">
+            {% for task in tasks %}
+            <div class="tarea-card" data-hour="">
+                <div class="tarea-header"> 
+                    <input type="checkbox" id="tarea{{ task.id }}" {% if task.completed %} checked {% endif %} onchange="completarTarea('{{ task.id }}')">
+                    <h4 class="tarea-title">{{ task.name }} {% if task.hour %} a las {{ task.hour }} {% endif %}</h4> 
+                    <button class="edit-btn" onclick="editarTarea('{{ task.id }}', '{{ task.name }}', '{{ task.hour }}')">✏️</button>
+                    <button class="delete-btn" onclick="borrarTarea('{{ task.id }}')">❌</button> 
+                </div>
+            </div>
+            {% endfor %}
+        </section> 
+    </div>
+
+    <footer id="footer">
+        <p>&copy;2024 Laboratorio IV</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const productivityPercentage = parseFloat("{{ productivity_percentage }}");
+            const productivityBar = document.getElementById('productivity-bar');
+            const emojiContainer = document.getElementById('emoji');
+
+            if (productivityBar) {
+                productivityBar.style.width = productivityPercentage + '%';
+            }
+
+            let emoji;
+            if (productivityPercentage >= 0 && productivityPercentage <= 20) {
+                emoji = '😢';
+            } else if (productivityPercentage >= 21 && productivityPercentage <= 40) {
+                emoji = '😐';
+            } else if (productivityPercentage >= 41 && productivityPercentage <= 60) {
+                emoji = '🙂';
+            } else if (productivityPercentage >= 61 && productivityPercentage <= 100) {
+                emoji = '😁';
+            }
+
+            if (emojiContainer) {
+                emojiContainer.textContent = emoji;
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Quieres cerrar sesión',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, cerrar sesión',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = 'index'; 
+            }
+        });
+    });
+
+        function completarTarea(id) {
+            fetch(`/complete_task/${id}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => window.location.reload());
+        }
+
+        function borrarTarea(id) {
+            fetch(`/delete_task/${id}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => window.location.reload());
+        }
+
+        function editarTarea(id, nombreActual, horaActual) {
+            Swal.fire({
+                title: 'Editar tarea',
+                html:
+                    '<input id="nombre-tarea" class="swal2-input" placeholder="Nombre de la tarea" value="' + nombreActual + '">' +
+                    '<input id="hora-tarea" type="time" class="swal2-input" placeholder="Horario" value="' + horaActual + '">',
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                cancelButtonText: 'Cancelar',
+                preConfirm: () => {
+                    const nombreTarea = document.getElementById('nombre-tarea').value;
+                    const horaTarea = document.getElementById('hora-tarea').value;
+                    if (!nombreTarea) {
+                        Swal.showValidationMessage('El nombre de la tarea es obligatorio');
+                        return false;
+                    }
+                    return { name: nombreTarea, hour: horaTarea };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const { name, hour } = result.value;
+                    fetch(`/edit_task/${id}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, hour })
+                    })
+                    .then(response => response.json())
+                    .then(() => {
+                        Swal.fire(
+                            '¡Actualizada!',
+                            'La tarea ha sido actualizada correctamente.',
+                            'success'
+                        ).then(() => {
+                            window.location.reload();
+                        });
+                    });
+                }
+            });
+        }
+
+        document.getElementById('agregar-tarea').addEventListener('click', () => {
+            Swal.fire({
+                title: 'Agregar nueva tarea',
+                html:
+                    '<input id="nombre-tarea" class="swal2-input" placeholder="Nombre de la tarea">' +
+                    '<input id="hora-tarea" type="time" class="swal2-input" placeholder="Horario">',
+                showCancelButton: true,
+                confirmButtonText: 'Agregar',
+                cancelButtonText: 'Cancelar',
+                preConfirm: () => {
+                    const nombreTarea = document.getElementById('nombre-tarea').value;
+                    const horaTarea = document.getElementById('hora-tarea').value;
+                    if (!nombreTarea) {
+                        Swal.showValidationMessage('El nombre de la tarea es obligatorio');
+                        return false;
+                    }
+                    return { name: nombreTarea, hour: horaTarea };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const { name, hour } = result.value;
+                    fetch('/add_task', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, hour })
+                    })
+                    .then(response => response.json())
+                    .then(() => {
+                        Swal.fire(
+                            '¡Agregada!',
+                            'La tarea ha sido agregada correctamente.',
+                            'success'
+                        ).then(() => {
+                            window.location.reload();
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

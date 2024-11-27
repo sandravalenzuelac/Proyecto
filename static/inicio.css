@@ -1,0 +1,118 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #D1BCE3;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #6A1B9A;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #9C27B0;
+    border-radius: 10px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2em;
+    margin: 0;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.add-task-btn {
+    background-color: #7B1FA2;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-task-btn:hover {
+    background-color: #9C27B0;
+}
+
+.productivity-bar-container {
+    width: 100%;
+    background-color: #6A1B9A;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.productivity-bar {
+    height: 40px;
+    background-color: #00E676;
+    width: 0;
+    text-align: center;
+    line-height: 40px;
+    font-weight: bold;
+}
+
+.tarea-card {
+    background-color: #8E24AA;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.tarea-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-btn, .delete-btn {
+    background-color: #311B92;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+    background-color: #4527A0;
+}
+
+.logout-btn {
+    background-color: #D32F2F;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-btn a {
+    text-decoration: none;
+    color: white;
+}
+
+.logout-btn:hover {
+    background-color: #E53935;
+}

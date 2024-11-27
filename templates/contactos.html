@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactos</title>
+    <link rel="icon" href="{{ url_for('static', filename='tarea.png') }}" type="image/png">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<style>
+        .contactos {
+            display: flex;
+            justify-content: space-around;
+            margin: 50px 0;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .card h3 {
+            font-size: 20px;
+            color: #332fed;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #5956ed;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
+        }
+
+</style>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h2 class="logo">App de Productividad</h2>
+       
+        <nav class="menu">
+            <a class="menu-btn" href="{{ url_for('index') }}">Inicio</a>
+            <a class="menu-btn" href="{{ url_for('register') }}">Registrarse</a>
+            <a class="menu-btn" href="{{ url_for('login') }}">Acceder</a>
+            <a class="menu-btn" href="#">Contáctanos</a>
+        </nav>
+    </header>
+
+    <!-- SECCIÓN DE CONTACTOS -->
+    <section class="contactos">
+        <div class="cards-container">
+            <!-- Card 1 -->
+            <div class="card">
+                <h3>Sandra Valenzuela</h3>
+                <p>Alumna de Laboratorio IV, 4A</p>
+                <p>Email: valenzuela.sandrac@gmail.com</p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="card">
+                <h3>Pablo Ferrari</h3>
+                <p>Alumno de Laboratorio IV, 4A</p>
+                <p>Email: pablo.ferrari019@gmail.com</p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="card">
+                <h3>Maira Valdez</h3>
+                <p>Alumna de Laboratorio IV, 4A</p>
+                <p>Email: Maivalpra95@gmail.com</p>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="card">
+                <h3>German Zarate</h3>
+                <p>Alumno de Laboratorio IV, 4A</p>
+                <p>Email: Germanzarate.2003@gmail.com</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="footer">
+        <p>&copy;2024 Laboratorio IV</p>
+    </footer>
+
+</body>
+</html>

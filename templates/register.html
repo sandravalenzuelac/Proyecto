@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="icon" href="{{ url_for('static', filename='tarea.png') }}" type="image/png">
+    <!-- Agregar la librería de SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <header>
+        <h2 class="logo">App de Productividad</h2>
+        <input type="checkbox" id="check"> <!--Es el menú sanguchito-->
+        <label for="check" class="mostrar-menu">
+            &#8801;
+        </label>
+        <nav class="menu">
+            <a class="menu-btn" href="{{ url_for('index') }}">Inicio</a>
+            <a class="menu-btn" href="#">Registrarse</a>
+            <a class="menu-btn" href="{{ url_for('login') }}">Acceder</a>
+            <a class="menu-btn" href="{{ url_for('contactos') }}">Contáctanos</a>
+            <label for="check" class="esconder-menu">
+                &#215;
+            </label>
+        </nav>
+    </header>
+
+    <div class="form-container">
+        <form id="registroForm" novalidate> 
+            <div class="input-group">
+                <h2>Formulario de Registro</h2>
+                <label for="username" class="form-label mt-1">Nombre de Usuario:</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Tu nombre de Usuario" required 
+                       minlength="3" maxlength="20" pattern="^[a-zA-Z0-9._-]+$" 
+                       title="El nombre de usuario debe tener entre 3 y 20 caracteres y puede contener letras, números y los caracteres . _ -" 
+                       aria-describedby="usernameHelp">
+                <small id="usernameHelp" class="form-text text-muted">Entre 3 y 20 caracteres, puede contener letras, números y los caracteres . _ -</small>
+
+                <label for="nombre" class="form-label">Nombre</label>
+                <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Tu nombre" required 
+                       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ]+" title="El nombre solo puede contener letras" 
+                       aria-describedby="nombreHelp">
+                <small id="nombreHelp" class="form-text text-muted">Solo se permiten letras.</small>
+
+                <label for="apellido" class="form-label">Apellido</label>
+                <input type="text" class="form-control" name="apellido" id="apellido" placeholder="Tu apellido" required 
+                       pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ]+" title="El apellido solo puede contener letras" 
+                       aria-describedby="apellidoHelp">
+                <small id="apellidoHelp" class="form-text text-muted">Solo se permiten letras.</small>
+
+                <label for="exampleInputEmail1" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="exampleInputEmail1" placeholder="Ingresa tu email" required 
+                       aria-describedby="emailHelp">
+                <small id="emailHelp" class="form-text text-muted">Nunca compartiremos tus datos con nadie más.</small>
+
+                <label for="exampleInputPassword1" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Contraseña" required 
+                       minlength="6" maxlength="20" 
+                       title="La contraseña debe tener entre 6 y 20 caracteres">
+                <small id="passwordHelp" class="form-text text-muted">La contraseña debe tener entre 6 y 20 caracteres.</small>
+
+                <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirma tu contraseña" required 
+                       minlength="6" maxlength="20" 
+                       title="La contraseña debe tener entre 6 y 20 caracteres">
+                <small id="confirmPasswordHelp" class="form-text text-muted">Por favor, confirma tu contraseña.</small>
+
+                <input class="btn" type="submit" value="Registrarse">
+            </div>
+
+            <div class="form-txt">
+                <a href="login">¿Ya tienes cuenta? Inicia sesión aquí</a>
+            </div>
+        </form>
+    </div>
+
+    <footer id="footer">
+        <p>&copy;2024 Laboratorio IV</p>
+    </footer>
+
+    <script>
+        const form = document.getElementById('registroForm'); 
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+
+            let valid = true;
+            let errorMessages = [];
+
+            const username = document.getElementById('username');
+            if (!username.checkValidity()) {
+                valid = false;
+                errorMessages.push("El nombre de usuario debe tener entre 3 y 20 caracteres, y solo puede contener letras, números, y los caracteres . _ -.");
+            }
+
+            const nombre = document.getElementById('nombre');
+            if (!nombre.checkValidity()) {
+                valid = false;
+                errorMessages.push("El nombre solo puede contener letras.");
+            }
+
+            const apellido = document.getElementById('apellido');
+            if (!apellido.checkValidity()) {
+                valid = false;
+                errorMessages.push("El apellido solo puede contener letras.");
+            }
+
+            const email = document.getElementById('exampleInputEmail1');
+            if (!email.checkValidity()) {
+                valid = false;
+                errorMessages.push("Por favor, ingresa un email válido.");
+            }
+
+            const password = document.getElementById('exampleInputPassword1');
+            if (!password.checkValidity()) {
+                valid = false;
+                errorMessages.push("La contraseña debe tener entre 6 y 20 caracteres.");
+            }
+
+            const confirmPassword = document.getElementById('confirmPassword');
+            if (password.value !== confirmPassword.value) {
+                valid = false;
+                errorMessages.push("Las contraseñas no coinciden.");
+            }
+
+            if (valid) {
+                const formData = new FormData(form); 
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json(); 
+
+                if (data.status === 'success') {
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registro Exitoso',
+                        text: data.message,
+                        confirmButtonText: 'Iniciar Sesión',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/login'; 
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en el Registro',
+                        text: data.message,
+                        confirmButtonText: 'Volver a intentar',
+                    });
+                }
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Errores en el formulario',
+                    html: errorMessages.join('<br>'),
+                    confirmButtonText: 'Volver a intentar',
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

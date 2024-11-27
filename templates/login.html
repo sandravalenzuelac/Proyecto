@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="icon" href="{{ url_for('static', filename='tarea.png') }}" type="image/png">
+    <!-- Agrega la librería de SweetAlert para usar las alertas -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <header>
+        <h2 class="logo">Gestor de tareas</h2>
+        <input type="checkbox" id="check"> 
+        <label for="check" class="mostrar-menu">&#8801;</label>
+        <nav class="menu">
+            <a class="menu-btn" href="{{ url_for('index') }}">Inicio</a>
+            <a class="menu-btn" href="{{ url_for('register') }}">Registrarse</a>
+            <a class="menu-btn" href="{{ url_for('login') }}">Acceder</a>
+            <a class="menu-btn" href="{{ url_for('contactos') }}">Contactanos</a>
+            <label for="check" class="esconder-menu">&#215;</label>
+        </nav>
+    </header>
+    
+    <div class="form-container">
+        <form id="loginForm" action=""> 
+            <h2>Iniciar Sesión</h2>
+            <p>Ingresa tus datos</p>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" placeholder="Email" id="email" required>
+                <label for="contraseña">Contraseña</label>
+                <input type="password" name="password" placeholder="Contraseña" id="contraseña" required>
+                <div class="form-txt"></div>
+                <input class="btn" type="submit" value="Enviar">
+            </div>
+            <div class="form-txt">
+                <a href="{{ url_for('register') }}">¿No tienes una cuenta? Regístrate aquí</a>
+            </div>
+        </form>
+    </div>
+    
+    <footer id="footer">
+        <p>&copy;2024 Laboratorio IV</p>
+    </footer>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+        
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('contraseña').value.trim();
+        
+            if (!email) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'El correo electrónico es obligatorio.',
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
+                return;
+            }
+        
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Por favor ingresa un correo electrónico válido.',
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
+                return;
+            }
+        
+            if (!password) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La contraseña es obligatoria.',
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
+                return;
+            }
+        
+            const requestData = { email, password };
+        
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData),
+                });
+        
+                const data = await response.json();
+        
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'Continuar'
+                    }).then(() => {
+                        window.location.href = '/inicio';
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: data.message,
+                        icon: 'error',
+                        confirmButtonText: 'Intentar de nuevo'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudo completar la solicitud. Inténtalo más tarde.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                console.error('Error en el fetch:', error);
+            }
+        });
+    </script>
+
+</body>
+</html>
